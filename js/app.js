@@ -1,9 +1,8 @@
 //###Variables
-let box = document.querySelectorAll('.box');
 
-/*Start Screen*/
+/*---Start Screen---*/
 
-//create start screen
+//create start screen div
 const startScreenDiv = document.createElement('div');
 startScreenDiv.className = "screen screen-start";
 startScreenDiv.id ='start';
@@ -26,15 +25,126 @@ header.appendChild(title);
 header.appendChild(button);
 startScreenDiv.appendChild(header);
 
-//select and hide the board
-const board = document.querySelector('#board');
+/*---Board---*/
+
+//select the box area
+const boxArea = document.querySelector('.boxes');
+//select the boxes on the board
+let box = document.querySelectorAll('.box');
+
+//create array of all possible win combinations
+let winParameters = [
+[box[0],box[1],box[2]],
+[box[3],box[4],box[5]],
+[box[6],box[7],box[8]],
+
+[box[0],box[3],box[6]],
+[box[1],box[4],box[7]],
+[box[2],box[5],box[8]],
+
+[box[0],box[4],box[8]],
+[box[2],box[4],box[6]],
+];
+
+//create a random number to choose player 1
+let randomNum = Math.floor(Math.random() * 2);
+
+//create arrays to capture each players selections/move
+let player1Selections = [];
+let player2Selections = [];
+
+//paragraph message for end game scree
+const paragraphE = document.createElement('p');
+  paragraphE.classList.add('message');
+
+//##Functions
+
+/*---Game win parameters---*/
+
+//compare win parameters array with the player selection array, return true if there is a match
+const winner = (winParameters, playerSelections) => {
+    for (let i =0; i <winParameters.length; i++) {
+      if(winParameters[i].every(checkedBox => playerSelections.indexOf(checkedBox) != -1))
+      return true;
+  }
+      return false;
+ }
+
+//create winner screen function
+const createEndGameScreen = (winnerClassName) => {
+const winnerScreenDiv = document.createElement('div');
+winnerScreenDiv.id ='finish';
+winnerScreenDiv.className = winnerClassName;
+
+//create header
+const header2 = document.createElement('header');
+
+//create title
+let title2 = document.createElement('h1');
+title2.textContent = 'Tic Tac Toe';
+
+//set text content of p element
+  paragraphE.textContent = 'Winner';
+
+//create button
+const button2 = document.createElement('a');
+button2.setAttribute('class','button');
+button2.setAttribute('href', '#');
+button2.textContent = 'New game';
+//add event listener to new game button to reset game
+button2.onclick = () => {
+  window.location.reload(true);
+}
+
+//append winner screen elements to page
+header2.append(title2);
+header2.appendChild(paragraphE);
+header2.appendChild(button2);
+winnerScreenDiv.appendChild(header2);
+document.querySelector('body').append(winnerScreenDiv);
+};
+
+//show winner function
+const showWinnner = (player, playerSelections) => {
+  //
+  if (winner(winParameters, player1Selections) === true) {
+  //hide the board
+  board.style.display = 'none';
+  //show player 1 win page
+  createEndGameScreen('screen screen-win screen-win-one');
+  } else if (winner(winParameters, player2Selections) === true) {
+  //hide the board
+  board.style.display = 'none';
+  //show player 2 win page
+  createEndGameScreen('screen screen-win screen-win-two');
+  }
+}
+
+//showTie function
+const showTie = (playerSelections) => {
+  if ((playerSelections.length === 5) && (board.style.display === 'block')) {
+    //hide the board
+  board.style.display = 'none';
+  //show player tie screen
+  createEndGameScreen('screen screen-win screen-win-tie');
+  //set text content of p element
+  paragraphE.textContent = 'It\'s a Tie!';
+
+  }
+}
+//reset the board
+
+//###Function calls
+
+/*---Start Screen---*/
+
+//hide the board
 board.style.display = 'none';
 
 //append the start screen to the page
 document.querySelector('body').append(startScreenDiv);
 
-//add event listener on button to hide start screen and display the board game
-let randomNum = Math.floor(Math.random() * 2);
+//add event listener on start game button to hide start screen and display the board game
 button.onclick = () => {
   startScreenDiv.style.display = 'none';
   board.style.display = 'block';
@@ -44,30 +154,6 @@ button.onclick = () => {
   player1.classList.add("active");
   }
 };
-
-//alternate between the x's and o's
-let player1Selections = [];
-let player2Selections = [];
-boxArea = document.querySelector('.boxes');
-boxArea.onclick = (e) => {
-  if (player1.className === 'players active'){
-    e.target.classList.add('box-filled-1');
-    player1Selections.push(e.target);
-    player2.classList.add('active');
-    player1.classList.remove('active');
-    showWinnner(player2, player1Selections);
-
-  }else {
-    e.target.classList.add('box-filled-2');
-    player2Selections.push(e.target);
-    player1.classList.add('active');
-    player2.classList.remove('active');
-    showWinnner(player1, player2Selections);
-
-
-  }
-
-  }
 
 //create mouseover on the box area
 boxArea.onmouseover = (e) => {
@@ -85,72 +171,29 @@ setTimeout(function() {
   e.target.style.backgroundImage = '';
   }, 500);
 }
-//##Functions
-/*Game win parameters*/
-//create array of all possible win combinations
-let winParameters = [
-[box[0],box[1],box[2]],
-[box[3],box[4],box[5]],
-[box[6],box[7],box[8]],
 
-[box[0],box[3],box[6]],
-[box[1],box[4],box[7]],
-[box[2],box[5],box[8]],
-
-[box[0],box[4],box[8]],
-[box[2],box[4],box[6]],
-
-];
-
-  //compare win parameters array with the player selection array, return true if there is a match
- const winner = (winParameters, playerSelections) => {
-    for (let i =0; i <winParameters.length; i++) {
-      if(winParameters[i].every(checkedBox => playerSelections.indexOf(checkedBox) != -1))
-      return true;
+// add an event listener to the boxArea
+boxArea.onclick = (e) => {
+  // if player1 is active and the selected box is empty - run code
+  if (player1.className === 'players active' && e.target.className === 'box'){
+    //mark the user's selection by adding class for player 1
+    e.target.classList.add('box-filled-1');
+    //add player1's selection to player1's selection array
+    player1Selections.push(e.target);
+    //switch player turn to player 2
+    player2.classList.add('active');
+    //remove the active class/turn from player 1
+    player1.classList.remove('active');
+    //check to see if player one is the winner.
+    showWinnner(player2, player1Selections);
+    showTie(player1Selections);
   }
-      return false;}
-
-
-//show winner function
-const showWinnner = (player, playerSelections) => {
-  if (player.className === 'players active' && winner(winParameters, playerSelections) === true) {
-  board.style.display = 'none';
-
+  if (player2.className === 'players active' && e.target.className === 'box'){
+    e.target.classList.add('box-filled-2');
+    player2Selections.push(e.target);
+    player1.classList.add('active');
+    player2.classList.remove('active');
+    showWinnner(player1, player2Selections);
+    showTie(player2Selections);
   }
-}
-
-//create winner screen
-const createWinnerScreen = () => {
-const winnerScreenDiv = document.createElement('div');
-winnerScreenDiv.id ='finish';
-winnerScreenDiv.className ='screen screen-win screen-win-two';
-
-
-//create header
-const header2 = document.createElement('header');
-
-//create title
-let title2 = document.createElement('h1');
-title2.textContent = 'Tic Tac Toe';
-
-//create p element
-const paragraphE = document.createElement('p');
-  paragraphE.classList.add('message');
-  paragraphE.textContent = 'Winner';
-//create button
-const button2 = document.createElement('a');
-button2.setAttribute('class','button');
-button2.setAttribute('href', '#');
-button2.textContent = 'New game';
-
-
-//append winner screen elements to page
-header2.append(title2);
-header2.appendChild(paragraphE);
-header2.appendChild(button2);
-winnerScreenDiv.appendChild(header2);
-document.querySelector('body').append(winnerScreenDiv)
-
-}
-//endgame
- //reset the board
+  }
