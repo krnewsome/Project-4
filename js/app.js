@@ -2,6 +2,10 @@
 
 /*---Start Screen---*/
 
+//players names
+let player1Name = prompt('Please Enter Player 1\'s Name');
+let player2Name = prompt('Please Enter Player 2\'s Name');
+
 //create start screen div
 const startScreenDiv = document.createElement('div');
 startScreenDiv.className = "screen screen-start";
@@ -53,12 +57,21 @@ let randomNum = Math.floor(Math.random() * 2);
 let player1Selections = [];
 let player2Selections = [];
 
-//paragraph message for end game scree
+//paragraph message for end game screen
 const paragraphE = document.createElement('p');
   paragraphE.classList.add('message');
 
+let boxIndexNum;
+
 //##Functions
 
+//create name div function
+const createPlayerNameDiv = (playerTag, playerName) =>{
+  let playerNameDiv = document.createElement('p');
+  playerNameDiv.classList.add('name')
+  playerNameDiv.textContent = playerName;
+  playerTag.append(playerNameDiv);
+};
 /*---Game win parameters---*/
 
 //compare win parameters array with the player selection array, return true if there is a match
@@ -129,11 +142,29 @@ const showTie = (playerSelections) => {
   createEndGameScreen('screen screen-win screen-win-tie');
   //set text content of p element
   paragraphE.textContent = 'It\'s a Tie!';
-
   }
 }
-//reset the board
 
+//program computer moves based on random number
+let computerMoves = () => {
+  do {
+  boxIndexNum = Math.floor(Math.random() * 9);
+   console.log(boxIndexNum);
+  } while ((player2.className === 'players active' && box[boxIndexNum].className !== 'box') && (winner(winParameters, player1Selections)) !== true)
+    if(player2.className === 'players active' && box[boxIndexNum].className === 'box'){
+    //add player2's selection to player2's selection array
+    box[boxIndexNum].classList.add('box-filled-2');
+    player2Selections.push(box[boxIndexNum]);
+    //switch player turn to player 1
+    player1.classList.add('active');
+    //remove the active class/turn from player 2
+    player2.classList.remove('active');
+    //check to see if player 2 is the winner, show player 1 winner page if true
+    showWinnner(player1, player2Selections);
+    //check to see if the game is a tie, show tie page if true
+    showTie(player2Selections);
+    }
+}
 //###Function calls
 
 /*---Start Screen---*/
@@ -148,6 +179,8 @@ document.querySelector('body').append(startScreenDiv);
 button.onclick = () => {
   startScreenDiv.style.display = 'none';
   board.style.display = 'block';
+  createPlayerNameDiv (player1, player1Name);
+  createPlayerNameDiv (player2, player2Name);
   if (randomNum === 0) {
   player2.classList.add("active");
   } else {
@@ -184,16 +217,25 @@ boxArea.onclick = (e) => {
     player2.classList.add('active');
     //remove the active class/turn from player 1
     player1.classList.remove('active');
-    //check to see if player one is the winner.
+    //check to see if player one is the winner, show player 1 winner page if true
     showWinnner(player2, player1Selections);
+    //check to see if the game is a tie, show tie page if true
     showTie(player1Selections);
   }
-  if (player2.className === 'players active' && e.target.className === 'box'){
-    e.target.classList.add('box-filled-2');
-    player2Selections.push(e.target);
-    player1.classList.add('active');
-    player2.classList.remove('active');
-    showWinnner(player1, player2Selections);
-    showTie(player2Selections);
-  }
+//  if (player2.className === 'players active' && e.target.className === 'box'){
+//    //mark the user's selection by adding class for player 1
+//    e.target.classList.add('box-filled-2');
+//    //add player2's selection to player2's selection array
+//    player2Selections.push(e.target);
+//    //switch player turn to player 1
+//    player1.classList.add('active');
+//    //remove the active class/turn from player 2
+//    player2.classList.remove('active');
+//    //check to see if player 2 is the winner, show player 1 winner page if true
+//    showWinnner(player1, player2Selections);
+//    //check to see if the game is a tie, show tie page if true
+//    showTie(player2Selections);
+//  }
+      computerMoves();
+
   }
