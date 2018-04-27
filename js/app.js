@@ -96,8 +96,13 @@ const header2 = document.createElement('header');
 let title2 = document.createElement('h1');
 title2.textContent = 'Tic Tac Toe';
 
+if (player1.className === 'players active'){
 //set text content of p element
-  paragraphE.textContent = 'Winner';
+  paragraphE.textContent = `${player1Name} is the Winner!`;
+} else if(player2.className === 'players active') {
+    paragraphE.textContent = `${player2Name} is the Winner!`;
+
+}
 
 //create button
 const button2 = document.createElement('a');
@@ -123,7 +128,7 @@ const showWinnner = (player, playerSelections) => {
   if (winner(winParameters, player1Selections) === true) {
   //hide the board
   board.style.display = 'none';
-  //show player 1 win page
+  //show player  win page
   createEndGameScreen('screen screen-win screen-win-one');
   } else if (winner(winParameters, player2Selections) === true) {
   //hide the board
@@ -222,20 +227,20 @@ boxArea.onclick = (e) => {
     //check to see if the game is a tie, show tie page if true
     showTie(player1Selections);
   }
-//  if (player2.className === 'players active' && e.target.className === 'box'){
-//    //mark the user's selection by adding class for player 1
-//    e.target.classList.add('box-filled-2');
-//    //add player2's selection to player2's selection array
-//    player2Selections.push(e.target);
-//    //switch player turn to player 1
-//    player1.classList.add('active');
-//    //remove the active class/turn from player 2
-//    player2.classList.remove('active');
-//    //check to see if player 2 is the winner, show player 1 winner page if true
-//    showWinnner(player1, player2Selections);
-//    //check to see if the game is a tie, show tie page if true
-//    showTie(player2Selections);
-//  }
-      computerMoves();
+  if (player2.className === 'players active' && e.target.className === 'box'){
+    //mark the user's selection by adding class for player 1
+    e.target.classList.add('box-filled-2');
+    //add player2's selection to player2's selection array
+    player2Selections.push(e.target);
+    //switch player turn to player 1
+    player1.classList.add('active');
+    //remove the active class/turn from player 2
+    player2.classList.remove('active');
+    //check to see if player 2 is the winner, show player 1 winner page if true
+    showWinnner(player1, player2Selections);
+    //check to see if the game is a tie, show tie page if true
+    showTie(player2Selections);
+  }
+//      computerMoves();
 
   }
