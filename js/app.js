@@ -187,6 +187,7 @@ if (player1.className !== 'players active'){
 } else if(player2.className !== 'players active') {
     paragraphE.textContent = `${player2.children[1].textContent} is the Winner!`;
 }
+
 //  else if (palyer2.className = '');
 //    paragraphE.textContent = `Computer is the Winner!`;
 
@@ -252,6 +253,8 @@ pvpButton.onclick = () => {
   playerVsComputerButton.style.display = 'none';
   playerNameInput.style.display = 'inline';
   nameButton.style.display= 'block';
+  createPlayerNameDiv(player2, '');
+
   if (randomNum === 0) {
   player2.classList.add("active");
   } else {
@@ -264,11 +267,24 @@ boxArea.onclick = (e) => {
   }
 };
 //add event listner on player vs computer button
-playerVsComputerButton.onclick = (e) =>{
+playerVsComputerButton.onclick = () =>{
+  pvpButton.style.display = 'none';
+  playerVsComputerButton.style.display = 'none';
+  playerNameInput.style.display = 'inline';
+  nameButton.style.display= 'block';
+  createPlayerNameDiv(player2, 'Computer');
+
+  if(playerNameInput.value !== '' && nameButton.textContent === 'Submit Player1 Name' ){
+   let playerName = playerNameInput.value;
+   //get players name
+  createPlayerNameDiv(player1, playerName);
+  playerNameInput.value = '';
   startScreenDiv.style.display = 'none';
   board.style.display = 'block';
+ }
   if (randomNum === 0) {
   player2.classList.add("active");
+  computerMoves();
   } else {
   player1.classList.add("active");
    }
@@ -287,14 +303,20 @@ nameButton.onclick = (e) =>{
   createPlayerNameDiv(player1, playerName);
   playerNameInput.value = '';
     //ask for player 2's name
+if(player2.children[1].textContent !== 'Computer'){
   nameButton.textContent = 'Please Submit Player2 Name';
- } else if( playerNameInput.value !== '' && nameButton.textContent === 'Please Submit Player2 Name' ){
-   let playerName = playerNameInput.value;
-  createPlayerNameDiv(player2, playerName);
-  //hide the start creen and show the game board
+  } else{
+      startScreenDiv.style.display = 'none';
+  board.style.display = 'block';
+  }
+ }
+   if( playerNameInput.value !== '' && nameButton.textContent === 'Please Submit Player2 Name' ){
+player2.children[1].textContent = playerNameInput.value;
+//hide the start creen and show the game board
   startScreenDiv.style.display = 'none';
   board.style.display = 'block';
- }};
+ }
+ };
 
 
 //create mouseover on the box area
