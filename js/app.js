@@ -109,14 +109,14 @@ const createPlayerNameDiv = (playerTag, playerName) =>{
     e.target.classList.add('box-filled-1');
     //add player1's selection to player1's selection array
     player1Selections.push(e.target);
+     //check to see if player one is the winner, show player 1 winner page if true
+    showWinnner(player2, player1Selections);
+    //check to see if the game is a tie, show tie page if true
+    showTie(player1Selections);
     //switch player turn to player 2
     player2.classList.add('active');
     //remove the active class/turn from player 1
     player1.classList.remove('active');
-    //check to see if player one is the winner, show player 1 winner page if true
-    showWinnner(player2, player1Selections);
-    //check to see if the game is a tie, show tie page if true
-    showTie(player1Selections);
   }
 };
 
@@ -127,14 +127,15 @@ if (player2.className === 'players active' && e.target.className === 'box'){
     e.target.classList.add('box-filled-2');
     //add player2's selection to player2's selection array
     player2Selections.push(e.target);
-    //switch player turn to player 1
-    player1.classList.add('active');
-    //remove the active class/turn from player 2
-    player2.classList.remove('active');
     //check to see if player 2 is the winner, show player 1 winner page if true
     showWinnner(player1, player2Selections);
     //check to see if the game is a tie, show tie page if true
     showTie(player2Selections);
+    //switch player turn to player 1
+    player1.classList.add('active');
+    //remove the active class/turn from player 2
+    player2.classList.remove('active');
+
   }
 };
 //program computer moves based on random number
@@ -147,14 +148,14 @@ let computerMoves = () => {
     //add player2's selection to player2's selection array
     box[boxIndexNum].classList.add('box-filled-2');
     player2Selections.push(box[boxIndexNum]);
-    //switch player turn to player 1
-    player1.classList.add('active');
-    //remove the active class/turn from player 2
-    player2.classList.remove('active');
     //check to see if player 2 is the winner, show player 1 winner page if true
     showWinnner(player1, player2Selections);
     //check to see if the game is a tie, show tie page if true
     showTie(player2Selections);
+    //switch player turn to player 1
+    player1.classList.add('active');
+    //remove the active class/turn from player 2
+    player2.classList.remove('active');
     }
 };
 /*---Game win parameters---*/
@@ -181,10 +182,10 @@ const header2 = document.createElement('header');
 let title2 = document.createElement('h1');
 title2.textContent = 'Tic Tac Toe';
 
-if (player1.className !== 'players active'){
+if (player1.className === 'players active'){
 //set text content of p element
   paragraphE.textContent = `${player1.children[1].textContent} is the Winner!`;
-} else if(player2.className !== 'players active') {
+} else if(player2.className === 'players active') {
     paragraphE.textContent = `${player2.children[1].textContent} is the Winner!`;
 }
 
@@ -317,8 +318,6 @@ player2.children[1].textContent = playerNameInput.value;
   board.style.display = 'block';
  }
  };
-
-
 //create mouseover on the box area
 boxArea.onmouseover = (e) => {
   //add highlighted area over box
