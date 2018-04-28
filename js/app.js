@@ -2,10 +2,6 @@
 
 /*---Start Screen---*/
 
-//players names
-let player1Name = prompt('Please Enter Player 1\'s Name');
-let player2Name = prompt('Please Enter Player 2\'s Name');
-
 //create start screen div
 const startScreenDiv = document.createElement('div');
 startScreenDiv.className = "screen screen-start";
@@ -18,15 +14,47 @@ const header = document.createElement('header');
 let title = document.createElement('h1');
 title.textContent = 'Tic Tac Toe';
 
-//create button
-const button = document.createElement('a');
-button.setAttribute('class','button');
-button.setAttribute('href', '#');
-button.textContent = 'Start game';
+//create player vs player button
+const pvpButton = document.createElement('a');
+pvpButton.setAttribute('class','button');
+pvpButton.setAttribute('href', '#');
+pvpButton.textContent = 'Player vs. Player';
+pvpButton.style.margin = '5px';
+
+//create player vs computer button
+const playerVsComputerButton = document.createElement('a');
+playerVsComputerButton.setAttribute('class','button');
+playerVsComputerButton.setAttribute('href', '#');
+playerVsComputerButton.textContent = 'Player vs. Computer';
+playerVsComputerButton.style.margin = '5px';
+
+//create user name input area
+ let playerNameInput = document.createElement('input');
+  playerNameInput.setAttribute('class','button');
+  playerNameInput.style.marginTop = '5px';
+//hide player name input
+  playerNameInput.style.display = 'none';
+
+//create name button to capture player name(s)
+const nameButton = document.createElement('a')
+nameButton.setAttribute('class','button');
+nameButton.setAttribute('href', '#');
+nameButton.textContent = 'Submit Player Name';
+nameButton.style.marginLeft = '400px';
+nameButton.style.marginRight = '400px';
+nameButton.style.marginTop = '5px';
+//hide name button
+nameButton.style.display = 'none';
 
 //append start page elements
 header.appendChild(title);
-header.appendChild(button);
+header.appendChild(pvpButton);
+header.appendChild(playerVsComputerButton);
+header.appendChild(playerNameInput);
+header.appendChild(nameButton);
+
+
+
 startScreenDiv.appendChild(header);
 
 /*---Board---*/
@@ -61,6 +89,7 @@ let player2Selections = [];
 const paragraphE = document.createElement('p');
   paragraphE.classList.add('message');
 
+//index number of box
 let boxIndexNum;
 
 //##Functions
@@ -71,6 +100,63 @@ const createPlayerNameDiv = (playerTag, playerName) =>{
   playerNameDiv.classList.add('name')
   playerNameDiv.textContent = playerName;
   playerTag.append(playerNameDiv);
+};
+
+//create player1 moves
+ // if player1 is active and the selected box is empty - run code
+ const player1Move = (e) => {
+   if (player1.className === 'players active' && e.target.className === 'box'){
+    //mark the user's selection by adding class for player 1
+    e.target.classList.add('box-filled-1');
+    //add player1's selection to player1's selection array
+    player1Selections.push(e.target);
+    //switch player turn to player 2
+    player2.classList.add('active');
+    //remove the active class/turn from player 1
+    player1.classList.remove('active');
+    //check to see if player one is the winner, show player 1 winner page if true
+    showWinnner(player2, player1Selections);
+    //check to see if the game is a tie, show tie page if true
+    showTie(player1Selections);
+  }
+};
+
+//player2 moves
+const player2Move = (e) => {
+if (player2.className === 'players active' && e.target.className === 'box'){
+    //mark the user's selection by adding class for player 1
+    e.target.classList.add('box-filled-2');
+    //add player2's selection to player2's selection array
+    player2Selections.push(e.target);
+    //switch player turn to player 1
+    player1.classList.add('active');
+    //remove the active class/turn from player 2
+    player2.classList.remove('active');
+    //check to see if player 2 is the winner, show player 1 winner page if true
+    showWinnner(player1, player2Selections);
+    //check to see if the game is a tie, show tie page if true
+    showTie(player2Selections);
+  }
+};
+//program computer moves based on random number
+let computerMoves = () => {
+  do {
+  boxIndexNum = Math.floor(Math.random() * 9);
+   console.log(boxIndexNum);
+  } while ((player2.className === 'players active' && box[boxIndexNum].className !== 'box') && (winner(winParameters, player1Selections)) !== true)
+    if(player2.className === 'players active' && box[boxIndexNum].className === 'box'){
+    //add player2's selection to player2's selection array
+    box[boxIndexNum].classList.add('box-filled-2');
+    player2Selections.push(box[boxIndexNum]);
+    //switch player turn to player 1
+    player1.classList.add('active');
+    //remove the active class/turn from player 2
+    player2.classList.remove('active');
+    //check to see if player 2 is the winner, show player 1 winner page if true
+    showWinnner(player1, player2Selections);
+    //check to see if the game is a tie, show tie page if true
+    showTie(player2Selections);
+    }
 };
 /*---Game win parameters---*/
 
@@ -101,23 +187,23 @@ if (player1.className === 'players active'){
   paragraphE.textContent = `${player1Name} is the Winner!`;
 } else if(player2.className === 'players active') {
     paragraphE.textContent = `${player2Name} is the Winner!`;
-
-}
+} else if (palyer2.className = '');
+    paragraphE.textContent = `Computer is the Winner!`;
 
 //create button
-const button2 = document.createElement('a');
-button2.setAttribute('class','button');
-button2.setAttribute('href', '#');
-button2.textContent = 'New game';
+const newGameButton = document.createElement('a');
+newGameButton.setAttribute('class','button');
+newGameButton.setAttribute('href', '#');
+newGameButton.textContent = 'New game';
 //add event listener to new game button to reset game
-button2.onclick = () => {
+newGameButton.onclick = () => {
   window.location.reload(true);
 }
 
 //append winner screen elements to page
 header2.append(title2);
 header2.appendChild(paragraphE);
-header2.appendChild(button2);
+header2.appendChild(newGameButton);
 winnerScreenDiv.appendChild(header2);
 document.querySelector('body').append(winnerScreenDiv);
 };
@@ -150,26 +236,6 @@ const showTie = (playerSelections) => {
   }
 }
 
-//program computer moves based on random number
-let computerMoves = () => {
-  do {
-  boxIndexNum = Math.floor(Math.random() * 9);
-   console.log(boxIndexNum);
-  } while ((player2.className === 'players active' && box[boxIndexNum].className !== 'box') && (winner(winParameters, player1Selections)) !== true)
-    if(player2.className === 'players active' && box[boxIndexNum].className === 'box'){
-    //add player2's selection to player2's selection array
-    box[boxIndexNum].classList.add('box-filled-2');
-    player2Selections.push(box[boxIndexNum]);
-    //switch player turn to player 1
-    player1.classList.add('active');
-    //remove the active class/turn from player 2
-    player2.classList.remove('active');
-    //check to see if player 2 is the winner, show player 1 winner page if true
-    showWinnner(player1, player2Selections);
-    //check to see if the game is a tie, show tie page if true
-    showTie(player2Selections);
-    }
-}
 //###Function calls
 
 /*---Start Screen---*/
@@ -180,18 +246,55 @@ board.style.display = 'none';
 //append the start screen to the page
 document.querySelector('body').append(startScreenDiv);
 
-//add event listener on start game button to hide start screen and display the board game
-button.onclick = () => {
+//add event listener on pvp button to hide start screen and display the board game
+pvpButton.onclick = () => {
+  pvpButton.style.display = 'none';
+  playerVsComputerButton.style.display = 'none';
+  playerNameInput.style.display = 'inline'
+  nameButton
+
   startScreenDiv.style.display = 'none';
   board.style.display = 'block';
-  createPlayerNameDiv (player1, player1Name);
-  createPlayerNameDiv (player2, player2Name);
   if (randomNum === 0) {
   player2.classList.add("active");
   } else {
   player1.classList.add("active");
   }
+//add an event listener to the boxArea
+boxArea.onclick = (e) => {
+  player1Move(e);
+  player2Move(e);
+  };
+
 };
+//add event listner on player vs computer button
+playerVsComputerButton.onclick = (e) =>{
+  startScreenDiv.style.display = 'none';
+  board.style.display = 'block';
+  if (randomNum === 0) {
+  player2.classList.add("active");
+  } else {
+  player1.classList.add("active");
+   }
+  boxArea.onclick = (e) => {
+  player1Move(e);
+  computerMoves(e);
+  }
+};
+
+//add event listener to submit buttons to capture player names
+nameButton.onclick = (e) =>{
+  //players names
+let player1Name = player1NameInput.value;
+let player2Name = player2NameInput.vlaue;
+  //check if player1 name field is blank; if not, append player name
+ if(player1NameInput.value !== ''){
+  player1NameInput.style.display = 'none';
+  createPlayerNameDiv(player1, player1Name);
+  player2NameInput.style.display = 'block';
+ }
+};
+
 
 //create mouseover on the box area
 boxArea.onmouseover = (e) => {
@@ -209,38 +312,3 @@ setTimeout(function() {
   e.target.style.backgroundImage = '';
   }, 500);
 }
-
-// add an event listener to the boxArea
-boxArea.onclick = (e) => {
-  // if player1 is active and the selected box is empty - run code
-  if (player1.className === 'players active' && e.target.className === 'box'){
-    //mark the user's selection by adding class for player 1
-    e.target.classList.add('box-filled-1');
-    //add player1's selection to player1's selection array
-    player1Selections.push(e.target);
-    //switch player turn to player 2
-    player2.classList.add('active');
-    //remove the active class/turn from player 1
-    player1.classList.remove('active');
-    //check to see if player one is the winner, show player 1 winner page if true
-    showWinnner(player2, player1Selections);
-    //check to see if the game is a tie, show tie page if true
-    showTie(player1Selections);
-  }
-  if (player2.className === 'players active' && e.target.className === 'box'){
-    //mark the user's selection by adding class for player 1
-    e.target.classList.add('box-filled-2');
-    //add player2's selection to player2's selection array
-    player2Selections.push(e.target);
-    //switch player turn to player 1
-    player1.classList.add('active');
-    //remove the active class/turn from player 2
-    player2.classList.remove('active');
-    //check to see if player 2 is the winner, show player 1 winner page if true
-    showWinnner(player1, player2Selections);
-    //check to see if the game is a tie, show tie page if true
-    showTie(player2Selections);
-  }
-//      computerMoves();
-
-  }
