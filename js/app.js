@@ -39,7 +39,7 @@ playerVsComputerButton.style.margin = '5px';
 const nameButton = document.createElement('a')
 nameButton.setAttribute('class','button');
 nameButton.setAttribute('href', '#');
-nameButton.textContent = 'Submit Player Name';
+nameButton.textContent = 'Submit Player1 Name';
 nameButton.style.marginLeft = '400px';
 nameButton.style.marginRight = '400px';
 nameButton.style.marginTop = '5px';
@@ -58,7 +58,6 @@ header.appendChild(nameButton);
 startScreenDiv.appendChild(header);
 
 /*---Board---*/
-
 //select the box area
 const boxArea = document.querySelector('.boxes');
 //select the boxes on the board
@@ -182,15 +181,16 @@ const header2 = document.createElement('header');
 let title2 = document.createElement('h1');
 title2.textContent = 'Tic Tac Toe';
 
-if (player1.className === 'players active'){
+if (player1.className !== 'players active'){
 //set text content of p element
-  paragraphE.textContent = `${player1Name} is the Winner!`;
-} else if(player2.className === 'players active') {
-    paragraphE.textContent = `${player2Name} is the Winner!`;
-} else if (palyer2.className = '');
-    paragraphE.textContent = `Computer is the Winner!`;
+  paragraphE.textContent = `${player1.children[1].textContent} is the Winner!`;
+} else if(player2.className !== 'players active') {
+    paragraphE.textContent = `${player2.children[1].textContent} is the Winner!`;
+}
+//  else if (palyer2.className = '');
+//    paragraphE.textContent = `Computer is the Winner!`;
 
-//create button
+//create new game button
 const newGameButton = document.createElement('a');
 newGameButton.setAttribute('class','button');
 newGameButton.setAttribute('href', '#');
@@ -250,11 +250,8 @@ document.querySelector('body').append(startScreenDiv);
 pvpButton.onclick = () => {
   pvpButton.style.display = 'none';
   playerVsComputerButton.style.display = 'none';
-  playerNameInput.style.display = 'inline'
-  nameButton
-
-  startScreenDiv.style.display = 'none';
-  board.style.display = 'block';
+  playerNameInput.style.display = 'inline';
+  nameButton.style.display= 'block';
   if (randomNum === 0) {
   player2.classList.add("active");
   } else {
@@ -264,8 +261,7 @@ pvpButton.onclick = () => {
 boxArea.onclick = (e) => {
   player1Move(e);
   player2Move(e);
-  };
-
+  }
 };
 //add event listner on player vs computer button
 playerVsComputerButton.onclick = (e) =>{
@@ -282,18 +278,23 @@ playerVsComputerButton.onclick = (e) =>{
   }
 };
 
-//add event listener to submit buttons to capture player names
+//add event listener to name buttons to capture player names
 nameButton.onclick = (e) =>{
-  //players names
-let player1Name = player1NameInput.value;
-let player2Name = player2NameInput.vlaue;
   //check if player1 name field is blank; if not, append player name
- if(player1NameInput.value !== ''){
-  player1NameInput.style.display = 'none';
-  createPlayerNameDiv(player1, player1Name);
-  player2NameInput.style.display = 'block';
- }
-};
+ if(playerNameInput.value !== '' && nameButton.textContent === 'Submit Player1 Name' ){
+   let playerName = playerNameInput.value;
+   //get players name
+  createPlayerNameDiv(player1, playerName);
+  playerNameInput.value = '';
+    //ask for player 2's name
+  nameButton.textContent = 'Please Submit Player2 Name';
+ } else if( playerNameInput.value !== '' && nameButton.textContent === 'Please Submit Player2 Name' ){
+   let playerName = playerNameInput.value;
+  createPlayerNameDiv(player2, playerName);
+  //hide the start creen and show the game board
+  startScreenDiv.style.display = 'none';
+  board.style.display = 'block';
+ }};
 
 
 //create mouseover on the box area
