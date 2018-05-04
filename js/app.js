@@ -386,11 +386,20 @@ boxArea.onmouseover = (e) => {
   }else {
     e.target.style.backgroundImage = 'url("./img/x.svg")';
   }
+};
 
-  //reset the highlighted box
-  setTimeout(function () {
+boxArea.onmouseout = (e) => {
+  //add highlighted area over box
+  if (e.target.className === 'box box-filled-1' || e.target.className === 'box box-filled-2') {
+    return;
+  }
+
+  if (player1.className === 'players active') {
+    //get image from imag folder
     e.target.style.backgroundImage = '';
-  }, 500);
+  }else {
+    e.target.style.backgroundImage = '';
+  }
 };
 
 //add event listener to new game button to reset game

@@ -23,7 +23,11 @@ h1 {
   padding: 1.25em 3em;
   text-decoration: none;
   -webkit-transition: 0.25s ease;
-  transition: 0.25s ease; }
+  transition: 0.25s ease;
+  margin: 15px auto;
+  }
+
+
   .button:hover {
     color: #000; }
 
