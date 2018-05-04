@@ -10,6 +10,7 @@ class Page {
     this.ssDiv =  document.createElement('div');
     this.header = document.createElement('header');
     this.title = document.createElement('h1');
+    this.form = document.createElement('form');
     this.playerNameInput = document.createElement('input');
     this.paragraphE = document.createElement('p');
 
@@ -20,6 +21,8 @@ class Page {
     this.paragraphE.classList.add(paraE);
     this.playerNameInput.style.display = display;
     this.playerNameInput.className = 'button';
+    this.playerNameInput.type = 'text';
+    this.playerNameInput.name = 'playerName';
     this.playerNameInput.style.marginTop = '5px';
   }
 
@@ -29,7 +32,8 @@ class Page {
     this.ssDiv.appendChild(this.header);
     this.header.appendChild(this.title);
     this.header.appendChild(this.paragraphE);
-    this.header.appendChild(this.playerNameInput);
+    this.header.appendChild(this.form);
+    this.form.appendChild(this.playerNameInput);
   }
 }
 
@@ -41,28 +45,25 @@ const startPage = new Page('screen screen-start', 'start', 'Tic Tac Toe', 'messa
 //create buttons class for all buttons
 class Buttons {
   constructor (gameMode) {
-    this.button = document.createElement('a');
+    this.button = document.createElement('button');
     this.button.className = 'button';
-    this.button.setAttribute = ('href', '#');
     this.button.textContent = gameMode;
-    this.button.style.margin = '5px';
-  }
-
-  //hide button function
-  hideButton() {
-    this.button.style.display = 'none';
+    this.button.name = 'button';
+    this.button.span = document.createElement('span');
   }
 
   //append button to page function
   appendButton() {
-    startPage.header.appendChild(this.button);
+    this.button.span.appendChild(this.button);
+    startPage.form.appendChild(this.button.span);
   }
 
-  //style button function
-  styleButton() {
-    this.button.style.marginLeft = '250px';
-    this.button.style.marginRight = '250px';
-    this.button.style.marginTop = '5px';
+  runGameMode () {
+    pvpButton.button.span.remove();
+    playerVsComputerButton.button.span.remove();
+    startPage.playerNameInput.style.display = 'inline';
+    startPage.playerNameInput.focus();
+    nameButton.button.style.display = 'block';
   }
 }
 
@@ -271,9 +272,8 @@ board.style.display = 'none';
 //append start page elements
 startPage.appendPageElements();
 
-//style and hide name button
-nameButton.styleButton();
-nameButton.hideButton();
+//hide name button
+nameButton.button.style.display = 'none';
 
 //append start page game mode buttons
 let button1 = [pvpButton, playerVsComputerButton, nameButton];
@@ -283,10 +283,7 @@ button1.forEach(function (button) {
 
 //add event listener on pvp button to hide start screen and display the board game
 pvpButton.button.onclick = () => {
-  pvpButton.button.style.display = 'none';
-  playerVsComputerButton.button.style.display = 'none';
-  startPage.playerNameInput.style.display = 'inline';
-  nameButton.button.style.display = 'block';
+  pvpButton.runGameMode();
   createPlayerNameDiv(player2, '');
 
   //decide which players turn is first
@@ -305,10 +302,7 @@ pvpButton.button.onclick = () => {
 
 //add event listner on player vs computer button
 playerVsComputerButton.button.onclick = () => {
-  pvpButton.button.style.display = 'none';
-  playerVsComputerButton.button.style.display = 'none';
-  startPage.playerNameInput.style.display = 'inline';
-  nameButton.button.style.display = 'block';
+  playerVsComputerButton.runGameMode();
 
   //create computer player name
   createPlayerNameDiv(player2, 'Computer');
@@ -335,6 +329,7 @@ playerVsComputerButton.button.onclick = () => {
   //add an event listener to the boxArea
   boxArea.onclick = (e) => {
     player1Move(e);
+
     //prevent computer from making a move (stop loop) if the game ends in a tie
     if (winner(winParameters, player1Selections) !== true &&  board.style.display !== 'none') {
       computerMoves(e);
@@ -343,7 +338,9 @@ playerVsComputerButton.button.onclick = () => {
 };
 
 //add event listener to name buttons to capture player names
-nameButton.button.onclick = (e) => {
+startPage.form.onsubmit = (e) => {
+  //prevent form from submiting
+  e.preventDefault();
 
   //check if player1 name field is blank; if not, append player name
   if (startPage.playerNameInput.value !== '' && nameButton.button.textContent === 'Submit Player1 Name') {
@@ -385,9 +382,9 @@ boxArea.onmouseover = (e) => {
 
   if (player1.className === 'players active') {
     //get image from imag folder
-    e.target.style.backgroundImage = 'url("../img/o.svg")';
+    e.target.style.backgroundImage = 'url("./img/o.svg")';
   }else {
-    e.target.style.backgroundImage = 'url("../img/x.svg")';
+    e.target.style.backgroundImage = 'url("./img/x.svg")';
   }
 
   //reset the highlighted box
